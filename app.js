@@ -1,165 +1,118 @@
-const tasks = {
-  "2026-10-06": [
-    { id: 1, subject: "Economics", task: "Practice questions from National Income", done: false },
-    { id: 2, subject: "Economics", task: "Practice M&B and AD-AS numericals", done: false },
-    { id: 3, subject: "BST", task: "Revise Chapters 1–5", done: false },
-    { id: 4, subject: "Accountancy", task: "Revise Issue of Shares concepts", done: false },
-    { id: 5, subject: "IP", task: "Start SQL fundamentals", done: false }
-  ]
-};
-
-const quotes = [
-  "Your future is being decided by what you execute today.",
-  "Discipline is doing the work when motivation has disappeared.",
-  "31 days. No excuses. No negotiation.",
-  "You do not need a perfect day. You need an executed day.",
-  "Every unfinished task is a vote for the future you say you don't want.",
-  "Stop planning the life you want. Execute it.",
-  "The gap between you and your goal is today's work.",
-  "You said you wanted the result. Now earn it.",
-  "Small excuses compound into big regrets.",
-  "Do the work. Let the result speak."
-];
-
 const main = document.getElementById("main");
 const navButtons = document.querySelectorAll(".nav-btn");
 
-function getToday() {
-  const d = new Date();
-  return d.toISOString().slice(0, 10);
-}
-
-function getTasks() {
-  const saved = localStorage.getItem("project31_tasks");
-  return saved ? JSON.parse(saved) : tasks;
-}
-
-function saveTasks(data) {
-  localStorage.setItem("project31_tasks", JSON.stringify(data));
-}
-
-function getQuote() {
-  const today = getToday();
-  const savedDate = localStorage.getItem("project31_quote_date");
-  let index = Number(localStorage.getItem("project31_quote_index") || 0);
-
-  if (savedDate !== today) {
-    index = (index + 1) % quotes.length;
-    localStorage.setItem("project31_quote_date", today);
-    localStorage.setItem("project31_quote_index", index);
-  }
-
-  return quotes[index];
-}
-
-function calculateScore() {
-  const data = getTasks();
-  let completed = 0;
-  let total = 0;
-
-  Object.values(data).forEach(day => {
-    day.forEach(task => {
-      total++;
-      if (task.done) completed++;
-    });
-  });
-
-  return { completed, total };
-}
-
-function renderToday() {
-  const today = getToday();
-  const data = getTasks();
-  const todayTasks = data[today] || [];
-
-  const completed = todayTasks.filter(t => t.done).length;
-  const total = todayTasks.length;
-
-  main.innerHTML = `
+const pages = {
+  today: `
     <section class="page">
       <div class="mission-card">
         <div class="eyebrow">TODAY'S MISSION</div>
-        <h2>${today}</h2>
+        <h2>OCTOBER 6</h2>
         <div class="progress">
-          <div class="progress-fill" style="width:${total ? completed / total * 100 : 0}%"></div>
+          <div class="progress-fill" style="width:0%"></div>
         </div>
-        <p>${completed}/${total} tasks completed</p>
+        <p>0/5 tasks completed</p>
       </div>
 
       <div class="quote-card">
         <div class="eyebrow">DAILY QUOTE</div>
-        <p>"${getQuote()}"</p>
+        <p>"Your future is being decided by what you execute today."</p>
       </div>
 
       <div class="tasks">
-        ${todayTasks.length ? todayTasks.map(task => `
-          <label class="task ${task.done ? "completed" : ""}">
-            <input type="checkbox"
-              data-task="${task.id}"
-              ${task.done ? "checked" : ""}>
-            <div>
-              <strong>${task.subject}</strong>
-              <span>${task.task}</span>
-            </div>
-          </label>
-        `).join("") : `
-          <div class="empty">No tasks scheduled for today.</div>
-        `}
+
+        <label class="task">
+          <input type="checkbox">
+          <div>
+            <strong>ECONOMICS</strong>
+            <span>Practice questions from National Income</span>
+          </div>
+        </label>
+
+        <label class="task">
+          <input type="checkbox">
+          <div>
+            <strong>ECONOMICS</strong>
+            <span>Practice M&B and AD-AS numericals</span>
+          </div>
+        </label>
+
+        <label class="task">
+          <input type="checkbox">
+          <div>
+            <strong>BST</strong>
+            <span>Revise Chapters 1–5</span>
+          </div>
+        </label>
+
+        <label class="task">
+          <input type="checkbox">
+          <div>
+            <strong>ACCOUNTANCY</strong>
+            <span>Revise Issue of Shares concepts</span>
+          </div>
+        </label>
+
+        <label class="task">
+          <input type="checkbox">
+          <div>
+            <strong>IP</strong>
+            <span>Start SQL fundamentals</span>
+          </div>
+        </label>
+
       </div>
     </section>
-  `;
+  `,
 
-  document.querySelectorAll("[data-task]").forEach(box => {
-    box.addEventListener("change", e => {
-      const id = Number(e.target.dataset.task);
-      const data = getTasks();
-
-      if (data[today]) {
-        const task = data[today].find(t => t.id === id);
-        if (task) task.done = e.target.checked;
-      }
-
-      saveTasks(data);
-      renderToday();
-    });
-  });
-}
-
-function renderPlan() {
-  const data = getTasks();
-
-  main.innerHTML = `
+  plan: `
     <section class="page">
       <div class="section-title">
-        <div class="eyebrow">OCTOBER</div>
+        <div class="eyebrow">OCTOBER MISSION</div>
         <h2>MISSION PLAN</h2>
       </div>
 
-      ${Object.entries(data).map(([date, dayTasks]) => `
-        <div class="day-card">
-          <h3>${date}</h3>
-          ${dayTasks.map(task => `
-            <div class="plan-task ${task.done ? "completed" : ""}">
-              <span>${task.done ? "✓" : "○"}</span>
-              <div>
-                <strong>${task.subject}</strong>
-                <small>${task.task}</small>
-              </div>
-            </div>
-          `).join("")}
+      <div class="day-card">
+        <h3>OCTOBER 6</h3>
+        <div class="plan-task">
+          <span>○</span>
+          <div>
+            <strong>ECONOMICS</strong>
+            <small>National Income practice</small>
+          </div>
         </div>
-      `).join("")}
+        <div class="plan-task">
+          <span>○</span>
+          <div>
+            <strong>ECONOMICS</strong>
+            <small>M&B + AD-AS practice</small>
+          </div>
+        </div>
+        <div class="plan-task">
+          <span>○</span>
+          <div>
+            <strong>BST</strong>
+            <small>Revise Chapters 1–5</small>
+          </div>
+        </div>
+        <div class="plan-task">
+          <span>○</span>
+          <div>
+            <strong>ACCOUNTANCY</strong>
+            <small>Issue of Shares revision</small>
+          </div>
+        </div>
+        <div class="plan-task">
+          <span>○</span>
+          <div>
+            <strong>IP</strong>
+            <small>Start SQL fundamentals</small>
+          </div>
+        </div>
+      </div>
     </section>
-  `;
-}
+  `,
 
-function renderScore() {
-  const score = calculateScore();
-  const percentage = score.total
-    ? Math.round(score.completed / score.total * 100)
-    : 0;
-
-  main.innerHTML = `
+  score: `
     <section class="page">
       <div class="section-title">
         <div class="eyebrow">PERFORMANCE</div>
@@ -167,21 +120,21 @@ function renderScore() {
       </div>
 
       <div class="score-card">
-        <div class="score-number">${percentage}%</div>
+        <div class="score-number">0%</div>
         <p>EXECUTION RATE</p>
       </div>
 
       <div class="stats">
         <div>
-          <strong>${score.completed}</strong>
+          <strong>0</strong>
           <span>COMPLETED</span>
         </div>
         <div>
-          <strong>${score.total - score.completed}</strong>
+          <strong>5</strong>
           <span>REMAINING</span>
         </div>
         <div>
-          <strong>${score.total}</strong>
+          <strong>5</strong>
           <span>TOTAL</span>
         </div>
       </div>
@@ -191,11 +144,9 @@ function renderScore() {
         <p>Points are earned through execution, not intention.</p>
       </div>
     </section>
-  `;
-}
+  `,
 
-function renderSyllabus() {
-  main.innerHTML = `
+  syllabus: `
     <section class="page">
       <div class="section-title">
         <div class="eyebrow">CLASS XII • CBSE</div>
@@ -221,4 +172,50 @@ function renderSyllabus() {
         <h3>INFORMATICS PRACTICES</h3>
         <p>Python • Pandas • Matplotlib • SQL • Data Handling</p>
       </div>
-      console.log("PROJECT 31 APP.JS LOADED");
+    </section>
+  `,
+
+  settings: `
+    <section class="page">
+      <div class="section-title">
+        <div class="eyebrow">CONTROL ROOM</div>
+        <h2>SETTINGS</h2>
+      </div>
+
+      <div class="setting-card">
+        <strong>PROJECT 31</strong>
+        <span>31 DAYS. ZERO EXCUSES. EXECUTE.</span>
+      </div>
+
+      <button class="danger-btn" onclick="alert('Progress reset.')">
+        RESET LOCAL PROGRESS
+      </button>
+
+      <p class="settings-note">
+        Project 31 — v1.0.2
+      </p>
+    </section>
+  `
+};
+
+function showPage(route) {
+  if (!main) return;
+
+  main.innerHTML = pages[route] || pages.today;
+
+  navButtons.forEach(function(button) {
+    button.classList.remove("active");
+
+    if (button.dataset.route === route) {
+      button.classList.add("active");
+    }
+  });
+}
+
+navButtons.forEach(function(button) {
+  button.addEventListener("click", function() {
+    showPage(button.dataset.route);
+  });
+});
+
+showPage("today");
