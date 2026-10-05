@@ -221,4 +221,4 @@ function renderSyllabus() {
         <h3>INFORMATICS PRACTICES</h3>
         <p>Python • Pandas • Matplotlib • SQL • Data Handling</p>
       </div>
-   
+      console.log("PROJECT 31 APP.JS LOADED");
